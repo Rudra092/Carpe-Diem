@@ -1744,6 +1744,8 @@ a.ed_getinvolved:hover i {
 .text-widget img {
     margin-bottom: 27px;
     margin-top: 4px;
+	/*added*/
+	width: 180px;
 }
 
 .ed_sociallink ul {
