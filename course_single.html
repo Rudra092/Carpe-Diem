@@ -34,14 +34,32 @@ Purchase:
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<!--payment-->
 	<style>
-    .qr-box {
+.qr-box {
       display: none;
-      margin-top: 20px;
+      max-width: 320px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .qr-box img {
+      width: 100%;
+      max-width: 250px;
+      height: auto;
+      margin: 0 auto;
+      display: block;
 	  margin-bottom: 20px;
     }
-    .qr-box img {
-      width: 250px;
-      height: 250px;
+
+    .qr-box p {
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+
+    #success-message {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #28a745;
+      display: none;
     }
   </style>
 </head>
@@ -422,13 +440,18 @@ Purchase:
                     <div class="col-lg-3 col-md-4 col-sm-12 col-12">
                         <div class="sidebar_wrapper_upper">
                             <div class="sidebar_wrapper">
+<!--payment start-->							
   <aside class="widget widget_button">
-    <a href="javascript:void(0);" class="ed_btn ed_green" onclick="startUPIPayment()">Purchase this course</a>
+    <a href="javascript:void(0);" class="ed_btn ed_green" onclick="showQRCode()">Purchase this course</a>
   </aside>
   <div class="qr-box" id="qrBox">
-    <p>Scan this QR code with any UPI app to pay:</p>
-    <img src="assets/images/upi.jpg" alt="UPI QR Code" />
+    <p>📱 Scan this QR code with any UPI app:</p>
+    <img src="https://api.qrserver.com/v1/create-qr-code/?data=upi://pay?pa=7008673890@ibl&pn=Rudra&am=10&cu=INR&size=250x250" alt="UPI QR Code" />
   </div>
+
+  <div id="success-message">✅ Payment confirmed! Redirecting to your course...</div>
+<!--payment start-->
+  
                                 <aside class="widget widget_categories">
                                     <h4 class="widget-title">related courses</h4>
                                     <ul>
@@ -601,42 +624,24 @@ Purchase:
     <script src="assets/js/default-custom.js"></script>
 <!--payment-->	
 <script>
-    function isMobileDevice() {
-      return /android|iphone|ipad|ipod/i.test(navigator.userAgent);
-    }
+    function showQRCode() {
+      const qr = document.getElementById("qrBox");
+      const msg = document.getElementById("success-message");
 
-    function startUPIPayment() {
-      const upiID = "7008673890@ibl"; // ✅ Replace with your actual UPI ID
-      const name = "Rudra";
-      const amount = "10";
-      const currency = "INR";
-      const upiLink = `upi://pay?pa=${upiID}&pn=${name}&am=${amount}&cu=${currency}`;
+      qr.style.display = "block";
+      msg.style.display = "none";
 
-      if (isMobileDevice()) {
-        // Open UPI intent link
-        window.location.href = upiLink;
+      setTimeout(() => {
+        if (confirm("✅ Did you complete the payment using your UPI app?")) {
+          msg.style.display = "block";
 
-        // Ask after a short delay
-        setTimeout(() => {
-          if (confirm("Did you complete the payment?")) {
-            window.location.href = "learning.html";
-          } else {
-            alert("Please complete the payment to access the course.");
-          }
-        }, 4000);
-      } else {
-        // On PC: Show QR code
-        document.getElementById("qrBox").style.display = "block";
-
-        // Ask for confirmation
-        setTimeout(() => {
-          if (confirm("Did you scan the QR and complete payment?")) {
-            window.location.href = "learning.html";
-          } else {
-            alert("Please complete the payment to access the course.");
-          }
-        }, 10000); // Give time for scanning
-      }
+          setTimeout(() => {
+            window.location.href = "learning.html"; // Replace with your actual course page
+          }, 3000); // Wait 3 seconds before redirect
+        } else {
+          alert("❌ Payment not detected. Please try again.");
+        }
+      }, 10000); // Give user 10 seconds to scan and pay
     }
   </script>
 </body>
